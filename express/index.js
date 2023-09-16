@@ -8,16 +8,15 @@ app.use(cors());
 const port = 8000
 
 app.post('/proxy' ,async (req, res) => {
-    console.log(req.body)
     const url = req.body.url
     const body = req.body.data
     const method = req.body.method
     const headers = req.body.headers
     if(body === undefined) {
-        res.send(await fetch(url, {
+        res.send(await (await fetch(url, {
             method: method,
             headers: headers
-        }))
+        })).json())
         return;
     }
     console.log(url)
