@@ -11,10 +11,12 @@ export class AppComponent {
   sessions:String[] = [];
   constructor(public notionApiService:NotionAPIService) {
     this.fetchSessionPages();
+    
    }
 
   fetchSessionPages = async () => {
     this.sessions = await this.notionApiService.fetchSessionPages();
+    console.log(this.sessions);
   }
 
 }

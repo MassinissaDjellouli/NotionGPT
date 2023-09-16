@@ -25,8 +25,12 @@ export class NotionAPIService {
   fetchSessionPages = async ():Promise<String[]> => {
     let mainpageid:string = await this.getMainPageId();    
     const data = await this.requestService.getRequest(`https://api.notion.com/v1/blocks/${mainpageid}/children`,this.headers);
-    console.log(data);
-    return ["test"];
+    let session:string[] = [];
+    data.results.filter((result:any) => result.has_children == true).forEach((result:any) => {
+      let childpage = result.child_page 
+      session.push(childpage.title);
+    })
+    return session;
   }
   headers =  {
       "Authorization":`Bearer ${environment.notionapikey}`,
