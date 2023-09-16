@@ -23,8 +23,8 @@ export class NotionAPIService {
     return data.results.filter((result:any) => result.object === "page").map((result:any) => result.id)[0];
   }
   fetchSessionPages = async ():Promise<String[]> => {
-    let mainpageid:string = await this.getMainPageId();
-    const data = this.requestService.getRequest(`https://api.notion.com/v1/blocks/${mainpageid}/children`,this.headers);
+    let mainpageid:string = await this.getMainPageId();    
+    const data = await this.requestService.getRequest(`https://api.notion.com/v1/blocks/${mainpageid}/children`,this.headers);
     console.log(data);
     return ["test"];
   }

@@ -10,12 +10,6 @@ export class RequestService {
     return await data.json();
   }
   postRequest = async (url:string,headers: any, body: any) => {
-    console.log(JSON.stringify({
-      "data":body,
-      "headers":headers,
-      "url":url,
-      "method":"POST"
-    }))
     const data = await this.sendToProxy(url,headers,body,"POST");
     this.throwOnError(data);
     return await data.json();
@@ -36,7 +30,9 @@ export class RequestService {
       });
     }
     return await fetch(this.proxy,{
-      body:JSON.stringify({
+      headers: {
+        "Content-Type":"application/json"
+      },body:JSON.stringify({
         "headers":headers,
         "url":url,
         "method":method
@@ -50,6 +46,6 @@ export class RequestService {
       throw new Error(data.statusText);
     }
   }
-  proxy = "localhost:8000/proxy";
+  proxy = "http://localhost:8000/proxy";
   constructor() { }
 }
