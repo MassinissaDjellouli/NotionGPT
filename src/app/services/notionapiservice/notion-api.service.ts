@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { RequestService } from '../requestservice/request.service';
+import { NotionObject } from 'src/app/Types/NotionObject';
 import { environment } from 'src/environments/environment';
+import { RequestService } from '../requestservice/request.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -22,15 +24,35 @@ export class NotionAPIService {
     }
     return data.results.filter((result:any) => result.object === "page").map((result:any) => result.id)[0];
   }
-  fetchSessionPages = async ():Promise<String[]> => {
+  fetchSessionPages = async ():Promise<NotionObject[]> => {
     let mainpageid:string = await this.getMainPageId();    
-    const data = await this.requestService.getRequest(`https://api.notion.com/v1/blocks/${mainpageid}/children`,this.headers);
-    let session:string[] = [];
-    data.results.filter((result:any) => result.has_children == true).forEach((result:any) => {
+    return await this.fetchBlockChildren(mainpageid,true);
+  }
+
+  fetchSessionCourses = async (session:NotionObject):Promise<NotionObject[]> => {
+    return await this.fetchBlockChildren(session.id,true);
+  }
+
+  fetchBlockChildren = async (blockid:string,hasChildren:boolean | undefined):Promise<NotionObject[]> => {
+    const data = await this.requestService.getRequest(`https://api.notion.com/v1/blocks/${blockid}/children`,this.headers);
+    let children:NotionObject[] = [];
+    if(hasChildren === undefined){
+      data.results.forEach((result:any) => {
+        let childpage = result.child_page 
+        children.push({
+          name:childpage.title,
+          id:result.id
+        });
+      })
+    }
+    data.results.filter((result:any) => result.has_children == hasChildren).forEach((result:any) => {
       let childpage = result.child_page 
-      session.push(childpage.title);
+      children.push({
+        name:childpage.title,
+        id:result.id
+      });
     })
-    return session;
+    return children;
   }
   headers =  {
       "Authorization":`Bearer ${environment.notionapikey}`,

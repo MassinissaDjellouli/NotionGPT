@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NotionAPIService } from './services/notionapiservice/notion-api.service';
+import { NotionObject } from './Types/NotionObject';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,7 @@ import { NotionAPIService } from './services/notionapiservice/notion-api.service
 })
 export class AppComponent {
   title = 'NotionGPT';
-  sessions:String[] = [];
+  sessions:NotionObject[] = [];
   constructor(public notionApiService:NotionAPIService) {
     this.fetchSessionPages();
     
