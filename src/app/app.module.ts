@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { RouterModule,Routes } from '@angular/router';
 import { SessionComponent } from './components/session/session.component';
 import { ClassComponent } from './components/class/class.component';
+import { TypesPipe } from './Types/types.pipe';
 
 const routes:Routes = [
   {path: 'session/:name', component: AppComponent},
@@ -14,7 +15,8 @@ const routes:Routes = [
   declarations: [
     AppComponent,
     SessionComponent,
-    ClassComponent
+    ClassComponent,
+    TypesPipe
   ],
   imports: [
     BrowserModule,
