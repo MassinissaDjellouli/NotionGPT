@@ -5,12 +5,12 @@ app.use(express.json());
 app.use(cors());
 const port = 8000
 
-app.post('/' ,async (req, res) => {
+app.post('/proxy' ,async (req, res) => {
     console.log(req.body)
-    // const url = req.body.url
-    // const body = req.body.data
-    // const method = req.body.method
-    // const headers = req.body.headers
+    const url = req.body.url
+    const body = req.body.data
+    const method = req.body.method
+    const headers = req.body.headers
     if(body === undefined) {
         res.send(await fetch(url, {
             method: method,
@@ -18,12 +18,12 @@ app.post('/' ,async (req, res) => {
         }))
         return;
     }
-    
-    res.send(await fetch(url, {
+    console.log(url)
+    res.send(await (await fetch(url, {
         method: method,
-        body: body,
+        body: JSON.stringify(body),
         headers: headers
-    }))
+    })).json())
 })
 
 app.listen(port, () => {
