@@ -14,7 +14,6 @@ export enum Markdown{
     QUOTE = ">",
     BULLET = "-",
     NUMBERED = "1.",
-    CHECKBOX = "- [ ]",
     LINK = "[",
     IMAGE = "![",
     TABLE = "|",

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { NotionObject } from 'src/app/types/NotionObject';
 import { environment } from 'src/environments/environment';
 import { RequestService } from '../requestservice/request.service';
+import { Note } from 'src/app/Types/Note';
 
 
 @Injectable({
@@ -33,8 +34,30 @@ export class NotionAPIService {
     return await this.fetchBlockChildren(session.id,true);
   }
 
-  fetchCourseNotes = async (course:NotionObject):Promise<Note> => {
-
+  fetchCourseNotes = async (course:NotionObject):Promise<Note[]> => {
+    let notes:NotionObject[] = await this.fetchBlockChildren(course.id,true);
+    let parsedNotes:Note[] = [];
+    notes.forEach(async (note:NotionObject) => {
+      parsedNotes.push(await this.parseNote(note));  
+    });
+    return parsedNotes;
+  }
+  parseNote = async (rootPage:NotionObject):Promise<Note> => {
+    let contentList = await this.fetchRawContent(rootPage.id);
+    contentList.forEach((content:any) => {
+      
+    })
+    return {
+      name:"test",
+      components:[]
+    }
+  }
+  fetchRawContent = async (blockid:string):Promise<any[]> => {
+    const data = await this.requestService.getRequest(`https://api.notion.com/v1/blocks/${blockid}/children`,this.headers);
+    if(data.object !== "list"){
+      return [];
+    }
+    return data.results;
   }
   fetchBlockChildren = async (blockid:string,hasChildren:boolean | undefined):Promise<NotionObject[]> => {
     const data = await this.requestService.getRequest(`https://api.notion.com/v1/blocks/${blockid}/children`,this.headers);
