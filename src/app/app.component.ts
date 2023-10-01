@@ -17,7 +17,9 @@ export class AppComponent {
 
   fetchSessionPages = async () => {
     this.sessions = await this.notionApiService.fetchSessionPages();
-    console.log(this.sessions);
+    let classes = await this.notionApiService.fetchSessionCourses(this.sessions[0]);
+    let notes = await this.notionApiService.fetchCourseNotes(classes[1]);
+    console.log(notes[0]);
   }
 
 }

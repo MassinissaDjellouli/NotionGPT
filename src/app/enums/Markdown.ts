@@ -20,5 +20,6 @@ export enum Markdown{
     LIST = "-",
     LINE = "---",
     TAB = "\t",
-    NEWLINE = "\n"
+    NEWLINE = "\n",
+    NONE = ""
 }

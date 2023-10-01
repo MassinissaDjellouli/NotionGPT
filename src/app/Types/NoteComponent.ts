@@ -4,6 +4,7 @@ export type NoteComponent = {
     name:string,
     content:string,
     markdownsymbol:Markdown,
+    enclosedMarkdown:boolean,
     id:string
-    child:NoteComponent|undefined
+    children:NoteComponent[]
 };

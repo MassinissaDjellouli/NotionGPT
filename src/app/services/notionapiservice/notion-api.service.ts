@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { Note } from 'src/app/Types/Note';
+import { NoteComponent } from 'src/app/Types/NoteComponent';
+import { Markdown } from 'src/app/enums/Markdown';
 import { NotionObject } from 'src/app/types/NotionObject';
 import { environment } from 'src/environments/environment';
 import { RequestService } from '../requestservice/request.service';
-import { Note } from 'src/app/Types/Note';
 
 
 @Injectable({
@@ -37,21 +39,40 @@ export class NotionAPIService {
   fetchCourseNotes = async (course:NotionObject):Promise<Note[]> => {
     let notes:NotionObject[] = await this.fetchBlockChildren(course.id,true);
     let parsedNotes:Note[] = [];
-    notes.forEach(async (note:NotionObject) => {
-      parsedNotes.push(await this.parseNote(note));  
-    });
+    // notes.forEach(async (note:NotionObject) => {
+    //   console.log(note);
+    //   parsedNotes.push(await this.parseNote(note));  
+    // });
+    parsedNotes.push(await this.parseNote(notes[0]))
     return parsedNotes;
   }
   parseNote = async (rootPage:NotionObject):Promise<Note> => {
     let contentList = await this.fetchRawContent(rootPage.id);
     contentList.forEach((content:any) => {
-      
+      console.log(content)
     })
     return {
       name:"test",
       components:[]
     }
   }
+
+  parseComponents = async (contentList:any[]):Promise<NoteComponent[]> => {
+    let toReturn: NoteComponent[] = [];
+    contentList.forEach(async (content:any) => {
+      return {
+        name:content.type,
+        content:content[content.type].rich_text[0].plain_text,
+        markdownsymbol:Markdown.NONE,
+        enclosedMarkdown:false,
+        id:content.id,
+        children:await this.parseComponents(await this.fetchRawContent(content.id))
+      }
+    })
+    +
+    return toReturn;
+  }
+
   fetchRawContent = async (blockid:string):Promise<any[]> => {
     const data = await this.requestService.getRequest(`https://api.notion.com/v1/blocks/${blockid}/children`,this.headers);
     if(data.object !== "list"){
